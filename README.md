@@ -6,7 +6,7 @@
 
 ## 🔧 FASE 0 – Preparazione progetto
 
-- [ ] Crea repo GitHub access-anomaly-detection
+- [x] Crea repo GitHub access-anomaly-detection
 - [ ] Organizza struttura progetto:
   - [ ] /frontend/
   - [ ] /backend/
