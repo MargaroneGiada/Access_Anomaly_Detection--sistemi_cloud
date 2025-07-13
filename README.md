@@ -7,21 +7,22 @@
 ## 🔧 FASE 0 – Preparazione progetto
 
 - [x] Crea repo GitHub access-anomaly-detection
-- [ ] Organizza struttura progetto:
-  - [ ] /frontend/
-  - [ ] /backend/
-  - [ ] /infrastructure/
-  - [ ] .github/workflows/
+- [x] Organizza struttura progetto:
+  - [x] /frontend/
+  - [x] /backend/
+  - [x] /infrastructure/
+  - [x] .github/workflows/
+<!-- non si può fare con aws learner lab
 - [ ] Configura utente IAM con permessi adeguati su:
   - [ ] S3, Lambda, API Gateway, DynamoDB
-  - [ ] Cognito, SNS, CloudWatch, ECR/ECS
+  - [ ] Cognito, SNS, CloudWatch, ECR/ECS -->
 
 ---
 
 ## 🌐 FASE 1 – Hosting frontend statico (S3 + CloudFront)
 
 - [ ] Sviluppa una prima versione del frontend (anche base)
-- [ ] Crea bucket S3 per il sito statico
+- [x] Crea bucket S3 per il sito statico
 - [ ] Abilita l'hosting statico su S3
 - [ ] Configura CloudFront:
   - [ ] Collegalo al bucket S3
