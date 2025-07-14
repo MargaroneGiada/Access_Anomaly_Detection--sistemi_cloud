@@ -29,7 +29,7 @@ jobs:
         env:
           AWS_S3_BUCKET: sistemicloud-project-aad
           AWS_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_ACCESS_KEY_ID: ASIAUZZZXUTRZRXIRKKH
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           SOURCE_DIR: frontend/aad-website/dist
