@@ -50,7 +50,7 @@ function Login() {
                             <button className="ghost" onClick={() => setIsRightPanelActive(false)}>Sign In</button>
                         </div>
                         <div className="overlay-panel overlay-right">
-                            <h1>Hello, Friend!</h1>
+                            <h1>Ciao, Amico!</h1>
                             <p>Enter your personal details and start your journey with us</p>
                             <button className="ghost" onClick={() => setIsRightPanelActive(true)}>Sign Up</button>
                         </div>
