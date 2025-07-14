@@ -22,7 +22,7 @@ function Login() {
 
                 <div className="form-container sign-up-container">
                     <form onSubmit={handleSignUp}>
-                        <h1>Creaa Account</h1>
+                        <h1>Crea Account</h1>
 
                         <input type="text" placeholder="Name" />
                         <input type="email" placeholder="Email" />
