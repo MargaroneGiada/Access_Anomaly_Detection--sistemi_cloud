@@ -7,29 +7,37 @@ on:
 
 jobs:
   deploy:
-    name: Upload to S3
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: npm install
-        working-directory: frontend/aad-website
-
-      - name: Build the project
-        run: npm run build
-        working-directory: frontend/aad-website
-
-      - name: Deploy to S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          args: --delete
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: frontend/aad-website
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend/aad-website
+        run: npm run build
+
+      - name: Configure AWS credentials file
+        run: |
+          mkdir -p ~/.aws
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+          echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+          echo "aws_session_token = $AWS_SESSION_TOKEN" >> ~/.aws/credentials
         env:
-          AWS_S3_BUCKET: sistemicloud-project-aad
-          AWS_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: ASIAUZZZXUTRZRXIRKKH
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_SESSION_TOKEN: IQoJb3JpZ2luX2VjEBUaCXVzLXdlc3QtMiJGMEQCICDkok+yA6RplDMp2m5V++A/e17aMnlBmo6W0GI0hkMMAiBr8iFry++0Ney0iMXNctZ/dS55ce12I98EVU49dQcFqyqpAgguEAAaDDMzMDI5NjY5ODA4MyIM5PoDF93PG7pobtxEKoYC44GXvmns9g9xD+itieqIykM0cCjgaX8RKY7rHMj+vgg4AcMfI14DxHapb+3WwP0WmOzxWlMSdYMz3jjqmMiQL50fs+iIDD0UBhu6iOhwSql5U2rPrK6VMOcEpPhBH7VCXwYW86N2qMqAk0A407/PsT12mRbpep8SBs1ftHuZFJIy3/nuTBvMSKz9KUmmffbT5kQATZS0jM+6yCyOh7DLrUIPFzfeI9st6s6ytFBWC15bUtP8rjSu3OdGsaDAssERvhoL4ts2wJnl41hy5RPD/u5JPuYveaaR/2TEtCfmv6qTbGGOjId6o4YPNWUrio93NApd7ZIw7eJNe03jQVuIZ6iluuRK6TDw/tPDBjqeAf/kMzrWQtSAEMEe7bsh8A8HoJOl5DoJ0GyUKdgmC2rjcJoQCFF/SUNjtOcWp2ydvAjCqpM6Wfu/uFnWangKSI2haWlnkHfI8+yhQ24n2ao74V4An8N4sqg04sVDhS3rUkHJD73NjUop1Qt8o3S4PUle6a0+ZVSnc+6NBqoD+Hk53jDL5nOwlnpzGeoo2/Z8pvQTPEJZ/9LtH9T+BXQT
-          SOURCE_DIR: frontend/aad-website/dist
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+
+      - name: Upload to S3
+        run: |
+          aws s3 sync frontend/aad-website/dist s3://sistemicloud-project-aad --delete --region us-east-1
