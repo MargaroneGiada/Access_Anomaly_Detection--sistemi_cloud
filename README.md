@@ -21,7 +21,7 @@
 
 ## 🌐 FASE 1 – Hosting frontend statico (S3 + CloudFront)
 
-- [ ] Sviluppa una prima versione del frontend (anche base)
+- [x] Sviluppa una prima versione del frontend (anche base)
 - [x] Crea bucket S3 per il sito statico
 - [ ] Abilita l'hosting statico su S3
 - [ ] Configura CloudFront:

@@ -1,0 +1,96 @@
+html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    color: black;
+}
+
+div.Dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background: #f4f4f4;
+    color: black;
+}
+
+.Dashboard header {
+    background: #232f3e;
+    color: white;
+    padding: 1rem 2rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.Dashboard .container {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 49% 50%;
+    grid-template-rows: 61% 38%; 
+    gap: 20px;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    height: 100%; 
+}
+
+
+.Dashboard .card {
+    background: white;
+    border-radius: 10px;
+    padding: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow-y: scroll;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.Dashboard canvas, .Dashboard table, .Dashboard ul {
+    max-width: 90%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+}
+
+.Dashboard canvas.line {
+    aspect-ratio: 2 / 1;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 300px;
+}
+
+.Dashboard canvas.pie {
+    aspect-ratio: 1 / 1;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 350px;
+}
+
+.Dashboard table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.Dashboard th, td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #ccc;
+}
+
+.Dashboard th {
+    background: #eee;
+}
+
+.Dashboard ul {
+    padding-left: 1.5rem;
+}
+
+.Dashboard li {
+    margin-bottom: 0.5rem;
+}
