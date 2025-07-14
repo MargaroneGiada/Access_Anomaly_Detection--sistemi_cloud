@@ -29,6 +29,7 @@
   - [ ] Collegalo al bucket S3
   - [ ] Aggiungi HTTPS con certificato -->
 - [x] Testa la pubblicazione manuale del frontend
+- [ ] Aggiungere github action
 
 ---
 
