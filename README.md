@@ -23,11 +23,12 @@
 
 - [x] Sviluppa una prima versione del frontend (anche base)
 - [x] Crea bucket S3 per il sito statico
-- [ ] Abilita l'hosting statico su S3
+- [x] Abilita l'hosting statico su S3
+<!-- non si può fare cib aws learner lab
 - [ ] Configura CloudFront:
   - [ ] Collegalo al bucket S3
-  - [ ] Aggiungi HTTPS con certificato
-- [ ] Testa la pubblicazione manuale del frontend
+  - [ ] Aggiungi HTTPS con certificato -->
+- [x] Testa la pubblicazione manuale del frontend
 
 ---
 
