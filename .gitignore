@@ -1,7 +1,6 @@
 update_credentials.sh
+**/.venv
 
-#frontend
-**/node_modules
 # Logs
 logs
 *.log
@@ -26,3 +25,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+**/__pycache__

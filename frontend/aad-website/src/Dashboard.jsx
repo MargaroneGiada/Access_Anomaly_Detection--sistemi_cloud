@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 import './Dashboard.css';
 import { useNavigate } from 'react-router-dom';
+
 
 function Dashboard() {
   const hourlyChartRef = useRef(null);
@@ -12,7 +13,14 @@ function Dashboard() {
 
   const navigate = useNavigate();
 
+  const [tokens, setTokens] = useState(null);
+
+  const handleEventClick = () => {
+    !tokens ? navigate('/login') : navigate('/')
+  }
+
   useEffect(() => {
+
     if (hourlyChartInstance.current) {
       hourlyChartInstance.current.destroy();
     }
@@ -32,7 +40,7 @@ function Dashboard() {
           tension: 0.1
         }]
       },
-      options: { responsive: true }
+      options: { respo16b462rrm11goc4ckidss92uqcnsive: true }
     });
 
     countryChartInstance.current = new Chart(countryChartRef.current, {
@@ -58,14 +66,23 @@ function Dashboard() {
       }
     };
   }, []);
-
+  
   return (
     <div className="Dashboard">
       <header>
         <h1>Dashboard</h1>
+        {!tokens ? (
+          <button onClick={() => handleEventClick()}>Login</button>
+        ) : (
+          <>
+            <p>Benvenutə, ***</p>
+           <button onClick={navigate('/')}>Logout</button>
+        </>
+)}
       </header>
 
       <div className="container">
+        
         <div className="card col-1">
           <h2>Accessi per ora del giorno</h2>
           <canvas className='line' ref={hourlyChartRef}></canvas>
@@ -102,7 +119,7 @@ function Dashboard() {
             <li>2025-07-01 09:21 - Anomalia da Russia</li>
             <li>2025-07-01 02:15 - Accesso da IP sconosciuto</li>
           </ul>
-        </div>
+        </div> 
       </div>
     </div>
   );

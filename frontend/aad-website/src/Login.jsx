@@ -8,12 +8,12 @@ function Login() {
 
     const handleSignUp = (e) => {
         e.preventDefault(); 
-        navigate('/dashboard');
+        navigate('/');
     };
 
     const handleSignIn = (e) => {
         e.preventDefault(); 
-        navigate('/dashboard');
+        navigate('/');
     };
 
     return (

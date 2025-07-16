@@ -40,4 +40,4 @@ jobs:
 
       - name: Upload to S3
         run: |
-          aws s3 sync frontend/aad-website/dist s3://sistemicloud-project-aad --delete --region us-east-1
+          aws s3 sync frontend/aad-website/dist s3://aad-frontend-hosting --delete --region us-east-1
