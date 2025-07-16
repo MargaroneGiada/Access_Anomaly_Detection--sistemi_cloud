@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend/aad-website
-        run: npm ci
+        run: npm install
 
       - name: Build frontend
         working-directory: frontend/aad-website
