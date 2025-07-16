@@ -23,6 +23,8 @@ def delete_bucket():
     response = s3.delete_bucket(
         Bucket=bucket_name
     )
+    print(f"Deleting bucket: {bucket_name}")
+
     return response
 
 def create_bucket():
@@ -38,7 +40,10 @@ def create_bucket():
         }
     )
 
+    print(f"Created bucket: {bucket_name}")
+
+
 def upload_website():
-    s3.upload_file('../../frontend/aad-website/dist/index.html', bucket_name, 'index.html')
-    s3.upload_file('../../frontend/aad-website/dist/assets/index-i9tu7_r3.css', bucket_name, 'assets/index-i9tu7_r3.css')
-    s3.upload_file('../../frontend/aad-website/dist/assets/index-BtcBhzrb.js', bucket_name, 'assets/index-BtcBhzrb.js')
+    s3.upload_file('../frontend/aad-website/dist/index.html', bucket_name, 'index.html')
+    s3.upload_file('../frontend/aad-website/dist/assets/index-i9tu7_r3.css', bucket_name, 'assets/index-i9tu7_r3.css')
+    s3.upload_file('../frontend/aad-website/dist/assets/index-BtcBhzrb.js', bucket_name, 'assets/index-BtcBhzrb.js')
