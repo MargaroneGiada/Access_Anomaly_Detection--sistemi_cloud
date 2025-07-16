@@ -1,6 +1,10 @@
 # Access_Anomaly_Detection
 
-# ✅ Access Anomaly Detection – To-Do List (Cloud Native + CI/CD + Docker)
+# Reminder
+
+#### Inserire credenziali in file .aws/credentials e su github!
+
+# To-Do List 
 
 ---
 
@@ -29,7 +33,8 @@
   - [ ] Collegalo al bucket S3
   - [ ] Aggiungi HTTPS con certificato -->
 - [x] Testa la pubblicazione manuale del frontend
-- [ ] Aggiungere github action
+- [x] Aggiungere github action (funziona!)
+- [x] Creare script python creazione e cancellazione bucket S3
 
 ---
 
