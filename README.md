@@ -39,7 +39,7 @@
 
 ---
 
-## 🔐 FASE 2 – Autenticazione con AWS Cognito
+## 🔐 FASE 2 – IN PAUSA - Autenticazione con AWS Cognito 
 
 - [ ] Crea User Pool su Cognito
 - [ ] Configura App Client (senza client secret)
@@ -101,6 +101,20 @@
 - [ ] Crea repository su ECR
 - [ ] Pusha le immagini su ECR
 - [ ] Collega container a Lambda (oppure ECS)
+
+---
+
+## 🖥️ FASE 6B – EC2 + Load Balancer
+
+- [ ] Crea un'istanza EC2 per il backend (es. app Flask o Node.js)
+- [ ] Installa Docker su EC2
+- [ ] Avvia i container (backend/API) su EC2 con Docker
+- [ ] Esporre il container su porta pubblica (es. 3000 o 8000)
+- [ ] Crea un Load Balancer (ALB):
+  - [ ] Configura listener su porta 80/443
+  - [ ] Collega il target group all'istanza EC2
+- [ ] (Opzionale) Autoscaling del backend
+- [ ] (Opzionale) Esporre anche il frontend da EC2 (se non usi più S3)
 
 ---
 

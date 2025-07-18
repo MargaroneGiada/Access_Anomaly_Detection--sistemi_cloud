@@ -3,4 +3,4 @@ from src import cognito
 
 s3.delete_bucket()
 
-cognito.delete_user_pool()
+# cognito.delete_user_pool()
