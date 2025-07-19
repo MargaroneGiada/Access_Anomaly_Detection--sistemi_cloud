@@ -64,7 +64,6 @@
   - [ ] Test locale
   - [ ] Push su ECR
 - [ ] Crea API Gateway e collega le rotte alle funzioni
-- [ ] Proteggi le rotte con Cognito Authorizer
 
 ---
 
@@ -121,8 +120,8 @@
 ## 🔁 FASE 7 – CI/CD con GitHub Actions
 
 ### Frontend
-- [ ] Crea workflow .github/workflows/deploy-frontend.yml
-- [ ] Sync automatico su S3 ad ogni push su main
+- [x] Crea workflow .github/workflows/deploy-frontend.yml
+- [x] Sync automatico su S3 ad ogni push su main
 - [ ] (Opzionale) Invalida cache CloudFront dopo il deploy
 
 ### Backend
