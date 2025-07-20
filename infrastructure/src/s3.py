@@ -1,8 +1,10 @@
 import boto3
+import os
 
 try:
     s3 = boto3.client('s3')
     bucket_name = "aad-frontend-hosting"
+    source_dir = "../frontend/aad-website/dist"
 except Exception as e:
         print(f"[S3] Error connecting to client: {e}")
 
@@ -53,6 +55,12 @@ def create_bucket():
 
 
 def upload_website():
-    s3.upload_file('../frontend/aad-website/dist/index.html', bucket_name, 'index.html')
-    s3.upload_file('../frontend/aad-website/dist/assets/index-i9tu7_r3.css', bucket_name, 'assets/index-i9tu7_r3.css')
-    s3.upload_file('../frontend/aad-website/dist/assets/index-BtcBhzrb.js', bucket_name, 'assets/index-BtcBhzrb.js')
+    for root, dirs, files in os.walk(source_dir):
+        for file in files:
+            local_path = os.path.join(root, file)
+            relative_path = os.path.relpath(local_path, source_dir)
+            s3_key = relative_path.replace("\\", "/")
+
+            print(f"Uploading {local_path} to s3://{bucket_name}/{s3_key}")
+            s3.upload_file(local_path, bucket_name, s3_key)
+
