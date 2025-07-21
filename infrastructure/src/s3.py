@@ -9,11 +9,6 @@ except Exception as e:
         print(f"[S3] Error connecting to client: {e}")
 
 def empty_s3_bucket(bucket_name):
-    """Empties an S3 bucket of all its objects.
-
-    Args:
-        bucket_name (str): The name of the bucket to empty.
-    """
     s3 = boto3.resource('s3')
 
     try:
@@ -61,6 +56,6 @@ def upload_website():
             relative_path = os.path.relpath(local_path, source_dir)
             s3_key = relative_path.replace("\\", "/")
 
-            print(f"Uploading {local_path} to s3://{bucket_name}/{s3_key}")
+            print(f"[S3] Uploading {local_path} to s3://{bucket_name}/{s3_key}")
             s3.upload_file(local_path, bucket_name, s3_key)
 

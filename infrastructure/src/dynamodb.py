@@ -13,7 +13,7 @@ def create_users_table():
             KeySchema=[{'AttributeName': 'email', 'KeyType': 'HASH'}],
             BillingMode='PAY_PER_REQUEST'
         )
-        print("Table 'Users' created.")
+        print("[DynamoDB] Table 'Users' created.")
     except Exception as e:
         print(f'[DynamoDB] Error while creating user table: {e}')
 
@@ -22,7 +22,7 @@ def delete_users_table():
         dynamodb.delete_table(
             TableName='Users'
         )
-        print("Table 'Users' deleted.")
+        print("[DynamoDB] Table 'Users' deleted.")
     except Exception as e:
         print(f'[DynamoDB] Error while deleting user table: {e}')
 

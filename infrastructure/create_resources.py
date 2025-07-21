@@ -5,6 +5,12 @@ from src import apigateway as api
 importlib.reload(api)
 from src import dynamodb as db
 importlib.reload(db)
+from src import ecr
+importlib.reload(ecr)
+from src import lambda_create as lamb
+importlib.reload(lamb)
+from src import sts
+importlib.reload(sts)
 # from src import cognito
 # importlib.reload(cognito)
 
@@ -20,3 +26,10 @@ api.create_api()
 
 #DynamoDB
 db.create_users_table()
+
+#ECR
+ecr.create_repo()
+
+#Lambda
+lamb.signup_build_and_push_image()
+lamb.create_signup_lambda()

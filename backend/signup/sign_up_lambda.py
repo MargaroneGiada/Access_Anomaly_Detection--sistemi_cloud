@@ -3,12 +3,11 @@ import boto3
 import bcrypt
 import time
 
-# TODO
-# runnare docker buil e docker run e testare se ora funziona
-# versione pushata non funzionante
-
-dynamodb = boto3.client('dynamodb', region_nam='us-east-1')
-
+try:
+    dynamodb = boto3.client('dynamodb', region_name='us-east-1')
+except Exception as e:
+    print(f'Error while connecting to client: {e}')
+    
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])

@@ -54,6 +54,9 @@
 ## 📡 FASE 3 – API REST (API Gateway + Lambda o Docker)
 
 - [ ] Definisci le API necessarie:
+  - [ ] POST /login 
+  - [ ] POST /signup 
+  - [ ] POST /log-access
   - [ ] POST /log-access
   - [ ] GET /accesses
   - [ ] GET /anomalies

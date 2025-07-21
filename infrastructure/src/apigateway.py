@@ -14,7 +14,7 @@ def create_api():
 
         api_id = response['ApiId']
 
-        print(f"API created with ID: {api_id}")
+        print(f"[API Gateway] created with ID: {api_id}")
         return api_id
     except Exception as e:
         print(f"[API Gateway] Error crating API: {e}")
@@ -34,6 +34,6 @@ def delete_api():
                     return None
         print(f"[API Gateway] API with {api_name} name not found.")
     except Exception as e:
-        print(f"Error fetching APIs: {e}")
+        print(f"[API Gateway] Error fetching APIs: {e}")
         return None
 
