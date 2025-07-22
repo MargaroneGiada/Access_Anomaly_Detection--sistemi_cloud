@@ -5,9 +5,10 @@ from src import ecr
 region = 'us-east-1'
 image_name = 'signup'
 account_id = sts.account_id 
-repo_uri = ecr.get_repo_uri()
+
 
 def signup_build_and_push_image():
+    repo_uri = ecr.get_repo_uri()
     subprocess.run(['docker', 'build', '-t', image_name, '../backend/signup'], check=True)
     subprocess.run([
         'docker', 'tag', f'{image_name}:latest', f'{repo_uri}:latest'
@@ -27,6 +28,7 @@ def signup_build_and_push_image():
 
 
 def signup_remove_image():
+    repo_uri = ecr.get_repo_uri()
     # subprocess.run(['docker', 'rm', '-f', 'signup'], check=False)
     subprocess.run(['docker', 'rmi', f'{repo_uri}:latest'], check=True)
     subprocess.run(['docker', 'rmi', 'signup:latest'], check=False)
@@ -36,6 +38,7 @@ def signup_remove_image():
 def create_signup_lambda():
     lambda_client = boto3.client('lambda', region_name=region)
     role_name = "LabRole"
+    repo_uri = ecr.get_repo_uri()
     try:
         response = lambda_client.create_function(
             FunctionName='SignupFunction',
@@ -51,6 +54,7 @@ def create_signup_lambda():
         print(f'[Lambda] Error: {e}')
 
 def delete_signup_lambda():
+
     lambda_client = boto3.client('lambda', region_name=region)
     try:
         response = lambda_client.delete_function(

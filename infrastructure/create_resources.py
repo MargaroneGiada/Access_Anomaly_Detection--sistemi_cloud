@@ -15,8 +15,11 @@ importlib.reload(sts)
 # importlib.reload(cognito)
 
 #S3
-s3.create_bucket()
-s3.upload_website()
+# s3.create_bucket()
+# s3.upload_website()
+
+# #ECR
+# ecr.create_repo()
 
 #Cognito
 # cognito.create_user_pool()
@@ -25,11 +28,8 @@ s3.upload_website()
 api.create_api()
 
 #DynamoDB
-db.create_users_table()
+# db.create_users_table()
 
-#ECR
-ecr.create_repo()
-
-#Lambda
-lamb.signup_build_and_push_image()
-lamb.create_signup_lambda()
+# #Lambda
+# lamb.signup_build_and_push_image()
+# lamb.create_signup_lambda()

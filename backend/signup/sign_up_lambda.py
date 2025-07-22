@@ -6,8 +6,8 @@ import time
 try:
     dynamodb = boto3.client('dynamodb', region_name='us-east-1')
 except Exception as e:
-    print(f'Error while connecting to client: {e}')
-    
+    print(f'[DynamoDB] Error while connecting to client: {e}')
+
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
