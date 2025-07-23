@@ -9,7 +9,7 @@
 
 ---
 
-## 🔧 FASE 0 – Preparazione progetto
+## FASE 0 – Preparazione progetto
 
 - [x] Crea repo GitHub access-anomaly-detection
 - [x] Organizza struttura progetto:
@@ -24,7 +24,7 @@
 
 ---
 
-## 🌐 FASE 1 – Hosting frontend statico (S3 + CloudFront)
+## FASE 1 – S3
 
 - [x] Sviluppa una prima versione del frontend (anche base)
 - [x] Crea bucket S3 per il sito statico
@@ -39,30 +39,30 @@
 
 ---
 
-## 🔐 FASE 2 – IN PAUSA - Autenticazione con AWS Cognito 
-
+## FASE 2 – IN PAUSA - Cognito 
+<!-- 
 - [ ] Crea User Pool su Cognito
 - [ ] Configura App Client (senza client secret)
 - [ ] Integra Cognito nel frontend:
   - [ ] Signup
   - [ ] Login
   - [ ] Logout
-- [ ] Proteggi le API tramite autorizzazione Cognito
+- [ ] Proteggi le API tramite autorizzazione Cognito -->
 
 ---
 
-## 📡 FASE 3 – API REST (API Gateway + Lambda o Docker)
+## FASE 3 – API REST (API Gateway + Lambda  Docker)
 
 - [ ] Definisci le API necessarie:
   - [ ] POST /login 
-  - [ ] POST /signup 
+  - [x] POST /signup 
   - [ ] POST /log-access
   - [ ] POST /log-access
   - [ ] GET /accesses
   - [ ] GET /anomalies
 - [ ] Scegli linguaggio per Lambda (es. Python)
 - [ ] Scrivi le funzioni Lambda
-- [ ] (Opzionale) Containerizza le funzioni Lambda con Docker
+- [ ] Containerizza le funzioni Lambda con Docker
   - [ ] Dockerfile
   - [ ] Test locale
   - [ ] Push su ECR
@@ -70,7 +70,7 @@
 
 ---
 
-## 💾 FASE 4 – Database con DynamoDB
+## FASE 4 – DynamoDB
 
 - [ ] Crea tabella DynamoDB:
   - [ ] PK: userId
@@ -82,7 +82,7 @@
 
 ---
 
-## 🧠 FASE 5 – Rilevamento anomalie + SNS
+## FASE 5 
 
 - [ ] Definisci regole base di anomalia:
   - [ ] IP sconosciuto / Paese diverso
@@ -96,7 +96,7 @@
 
 ---
 
-## 🐳 FASE 6 – Dockerizzazione componenti
+## FASE 6
 
 - [ ] Scrivi Dockerfile per Lambda container
 - [ ] Build e test locali con docker run
@@ -106,7 +106,7 @@
 
 ---
 
-## 🖥️ FASE 6B – EC2 + Load Balancer
+## FASE 6 
 
 - [ ] Crea un'istanza EC2 per il backend (es. app Flask o Node.js)
 - [ ] Installa Docker su EC2
@@ -120,7 +120,7 @@
 
 ---
 
-## 🔁 FASE 7 – CI/CD con GitHub Actions
+## FASE 7 – CI/CD con GitHub Actions
 
 ### Frontend
 - [x] Crea workflow .github/workflows/deploy-frontend.yml
@@ -128,7 +128,7 @@
 - [ ] (Opzionale) Invalida cache CloudFront dopo il deploy
 
 ### Backend
-- [ ] Crea workflow .github/workflows/deploy-backend.yml
+- [x] Crea workflow .github/workflows/deploy-backend.yml
 - [ ] Build Docker image
 - [ ] Push su ECR
 - [ ] Deploy su Lambda o ECS
@@ -136,16 +136,16 @@
 
 ---
 
-## 📊 FASE 8 – Visualizzazione accessi e anomalie
+## FASE 8 – Visualizzazione accessi e anomalie
 
-- [ ] Aggiungi pagina dashboard al frontend
+- [x] Aggiungi pagina dashboard al frontend
 - [ ] Visualizza elenco accessi per utente
 - [ ] Visualizza elenco anomalie
 - [ ] Usa grafici (es. Chart.js) per mostrare frequenza accessi
 
 ---
 
-## 📈 FASE 9 – Monitoring e debug
+## FASE 9 
 
 - [ ] Abilita CloudWatch Log per tutte le Lambda
 - [ ] Verifica log durante test manuali
@@ -154,7 +154,7 @@
 
 ---
 
-## 🎁 FASE FINALE – Consegna e documentazione
+## FASE 10
 
 - [ ] Scrivi README con:
   - [ ] Obiettivo del progetto
