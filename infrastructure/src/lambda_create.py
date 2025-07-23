@@ -9,7 +9,11 @@ account_id = sts.account_id
 
 def signup_build_and_push_image():
     repo_uri = ecr.get_repo_uri()
+
+    #creazione immagine docker
     subprocess.run(['docker', 'build', '-t', image_name, '../backend/signup'], check=True)
+
+    #push immagine su ecr
     subprocess.run([
         'docker', 'tag', f'{image_name}:latest', f'{repo_uri}:latest'
     ], check=True)
@@ -33,6 +37,7 @@ def signup_remove_image():
     subprocess.run(['docker', 'rmi', f'{repo_uri}:latest'], check=True)
     subprocess.run(['docker', 'rmi', 'signup:latest'], check=False)
     print("[Docker] Removed container and images")
+
 
 
 def create_signup_lambda():

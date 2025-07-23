@@ -14,22 +14,24 @@ importlib.reload(sts)
 # from src import cognito
 # importlib.reload(cognito)
 
-#S3
+# # S3
 # s3.create_bucket()
 # s3.upload_website()
 
 # #ECR
 # ecr.create_repo()
 
-#Cognito
-# cognito.create_user_pool()
+# # API Gateway
+# api.create_api()
 
-#API Gateway
-api.create_api()
+api.connect_lambda_to_api('SignupFunction')
 
-#DynamoDB
+# # DynamoDB
 # db.create_users_table()
 
 # #Lambda
 # lamb.signup_build_and_push_image()
 # lamb.create_signup_lambda()
+
+# #Cognito
+# cognito.create_user_pool()

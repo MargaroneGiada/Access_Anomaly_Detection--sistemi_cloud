@@ -52,11 +52,15 @@ def delete_api():
         print(f"[API Gateway] Error fetching APIs: {e}")
         return None
 
+def get_api_id():
+    with open('./src/apigateway.json') as f:
+        json_data = json.load(f)    
+    api_id = json_data[0]['api_id']
+    return api_id
 
 def connect_lambda_to_api(lambda_name):
-    with open('apigateway.json') as f:
-        json_data = json.load(f)    
-    api_id = json_data['api_id']
+    
+    api_id = get_api_id()
 
     try:
         lambda_info = lambda_client.get_function(FunctionName=lambda_name)
@@ -70,25 +74,28 @@ def connect_lambda_to_api(lambda_name):
             ApiId=api_id,
             IntegrationType='AWS_PROXY',
             IntegrationUri=f'arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/{lambda_arn}/invocations',
+            IntegrationMethod ='POST',
             PayloadFormatVersion='2.0'
         )
         integration_id = integration['IntegrationId']
+        print(f"[API Gateway] Created {lambda_name} integration")
     except Exception as e:
         print(f"[API Gateway] Error creating integration: {e}")
         return
     
     try:
         route = apigateway.create_route(
+
             ApiId=api_id,
             RouteKey='POST /signup',
             Target=f'integrations/{integration_id}'
         )
+        print(f"[API Gateway] Created route to {lambda_name}")
     except Exception as e:
         print(f"[API Gateway] Error creating route: {e}")
         return
     
     try:
-        # 4. Grant API Gateway permission to invoke Lambda
         lambda_client.add_permission(
             FunctionName=lambda_name,
             StatementId=f'{lambda_name}-invoke-permission',
@@ -102,12 +109,31 @@ def connect_lambda_to_api(lambda_name):
         print(f"[Lambda] Error granting API Gateway permission to invoke Lambda: {e}")
         return
 
-    apigateway.create_stage(
-        ApiId=api_id,
-        StageName='prod',
-        AutoDeploy=True
-    )
+    try:
+        apigateway.create_stage(
+            ApiId=api_id,
+            StageName='prod',
+            AutoDeploy=True
+        )
+        print(f"[API Gateway] Created stage prod")
+    except Exception as e:
+        print(f"[API Gateway] Error creating stage: {e}")
+        return
 
+    try:
+        apigateway.update_api(
+            ApiId=api_id,
+            CorsConfiguration={
+                    'AllowOrigins': ['*'], 
+                    'AllowMethods': ['POST'],
+                    'AllowHeaders': ['Content-Type']
+                }
+        )
+        print(f"[API Gateway] Updated api {api_id}")
+    except Exception as e:
+        print(f"[API Gateway] Error updating api: {e}")
+        return
+ 
     endpoint = f"https://{api_id}.execute-api.us-east-1.amazonaws.com/prod/signup"
     print(f"[API Gateway] Lambda connected to route. Endpoint: {endpoint}")
     return endpoint
