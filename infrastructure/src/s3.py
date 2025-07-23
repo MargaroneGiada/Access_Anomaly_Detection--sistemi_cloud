@@ -1,10 +1,11 @@
-import boto3
+import boto3, mimetypes
 import os
+import json
 
 try:
     s3 = boto3.client('s3')
     bucket_name = "aad-frontend-hosting"
-    source_dir = "../frontend/aad-website/dist"
+    source_dir = "../../frontend/aad-website/dist"
 except Exception as e:
         print(f"[S3] Error connecting to client: {e}")
 
@@ -17,19 +18,16 @@ def empty_s3_bucket(bucket_name):
         print(f"[S3] Error deleting objects: {e}")
 
 
-
 def delete_bucket():
     try:
         empty_s3_bucket(bucket_name)
         response = s3.delete_bucket(
             Bucket=bucket_name
         )
-        print(f"[S3] Deleting bucket: {bucket_name}")
+        print(f"[S3] Deleted bucket: {bucket_name}")
         return response
     except Exception as e:
         print(f"[S3] Error deleting bucket: {e}")
-
-    
 
 def create_bucket():
     try:
@@ -44,18 +42,66 @@ def create_bucket():
                 'ErrorDocument': {'Key': 'index.html'}
             }
         )
+
+        s3.delete_public_access_block(
+            Bucket=bucket_name
+        )
+
+        s3.put_public_access_block(
+            Bucket=bucket_name,
+            PublicAccessBlockConfiguration={
+                'BlockPublicAcls': False,
+                'IgnorePublicAcls': False,
+                'BlockPublicPolicy': False,
+                'RestrictPublicBuckets': False
+            }
+        )
+
+        bucket_policy = {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "PublicReadGetObject",
+                    "Effect": "Allow",
+                    "Principal": "*",
+                    "Action": "s3:GetObject",
+                    "Resource": f"arn:aws:s3:::{bucket_name}/*"
+                }
+            ]
+        }
+
+        s3.put_bucket_policy(
+            Bucket=bucket_name,
+            Policy=json.dumps(bucket_policy)
+        )
+
         print(f"[S3] Created bucket: {bucket_name}")
     except Exception as e:
         print(f"[S3] Error creating bucket: {e}")
 
 
 def upload_website():
-    for root, dirs, files in os.walk(source_dir):
+    for root, _, files in os.walk(source_dir):
         for file in files:
             local_path = os.path.join(root, file)
             relative_path = os.path.relpath(local_path, source_dir)
             s3_key = relative_path.replace("\\", "/")
 
-            print(f"[S3] Uploading {local_path} to s3://{bucket_name}/{s3_key}")
-            s3.upload_file(local_path, bucket_name, s3_key)
+            mime_type, _ = mimetypes.guess_type(local_path)
+            if not mime_type:
+                mime_type = "binary/octet-stream"
 
+            print(f"[S3] Uploading {local_path} to s3://{bucket_name}/{s3_key} with content-type {mime_type}")
+            try:
+                s3.upload_file(
+                    Filename=local_path,
+                    Bucket=bucket_name,
+                    Key=s3_key,
+                    ExtraArgs={'ContentType': mime_type}
+                )
+            except Exception as e:
+                print(f"[S3] Error uploading {s3_key}: {e}")
+
+delete_bucket()
+create_bucket()
+upload_website()
