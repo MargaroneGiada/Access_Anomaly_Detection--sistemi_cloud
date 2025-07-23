@@ -37,7 +37,7 @@ def lambda_handler(event, context):
 
         return {
             'statusCode': 200,
-            'body': json.dumps({'message': 'User created successfully'})
+            'body': json.dumps({'message': 'User created successfully! :)'})
         }
 
     except Exception as e:
