@@ -20,7 +20,7 @@ def get_aws_credential_value(key="aws_access_key_id"):
 
 OWNER = "MargaroneGiada"
 REPO = "Access_Anomaly_Detection--sistemi_cloud"
-TOKEN = "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"
+TOKEN = "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"
 AWS_ACCESS_KEY_ID = "AWS_ACCESS_KEY_ID"
 AWS_SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY"
 AWS_SESSION_TOKEN = "AWS_SESSION_TOKEN"
@@ -35,8 +35,6 @@ r_key.raise_for_status()
 j = r_key.json()
 pk, kid = j['key'], j["key_id"]
 pubkey = public.PublicKey(pk.encode(), encoding.Base64Encoder())
-
-
 
 enc = public.SealedBox(pubkey).encrypt(SECRET_AWS_ACCESS_KEY_ID.encode())
 enc = b64encode(enc).decode()

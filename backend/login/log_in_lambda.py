@@ -18,28 +18,25 @@ def lambda_handler(event, context):
             TableName='Users',
             Key={'email': {'S': email}}
         )
-        if 'Item' in response:
+        if not ('Item' in response):
             return {
                 'statusCode': 400,
-                'body': json.dumps({'message': 'User already exists'})
+                'body': json.dumps({'message': 'User does not exists'})
+            }
+        
+
+        if bcrypt.checkpw(password, response['Item']['password']['S'].encode('utf-8')):
+            return {
+                'statusCode': 200,
+                'body': json.dumps({'message': 'User logged successfully'})
+            }
+        else:
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'message': 'Email or password does not match'})
             }
 
-        hashed = bcrypt.hashpw(password, bcrypt.gensalt())
-
-        dynamodb.put_item(
-            TableName='Users',
-            Item={
-                'email': {'S': email},
-                'password': {'S': hashed.decode('utf-8')},
-                'created_at': {'S': str(int(time.time()))}
-            }
-        )
-
-        return {
-            'statusCode': 200,
-            'body': json.dumps({'message': 'User created successfully! :)'})
-        }
-
+        
     except Exception as e:
         return {
             'statusCode': 500,

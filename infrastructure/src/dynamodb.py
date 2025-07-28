@@ -1,5 +1,7 @@
 import boto3
 
+#TODO svuota tabelle
+
 try:
     dynamodb = boto3.client('dynamodb', region_name='us-east-1')
 except Exception as e:

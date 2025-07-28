@@ -91,6 +91,8 @@ def connect_lambda_to_api(lambda_name):
             Target=f'integrations/{integration_id}'
         )
         print(f"[API Gateway] Created route to {lambda_name}")
+        endpoint = f"https://{api_id}.execute-api.us-east-1.amazonaws.com/prod/signup"
+        print(f"[API Gateway] Lambda connected to route. Endpoint: {endpoint}")
     except Exception as e:
         print(f"[API Gateway] Error creating route: {e}")
         return
@@ -102,6 +104,48 @@ def connect_lambda_to_api(lambda_name):
             Action='lambda:InvokeFunction',
             Principal='apigateway.amazonaws.com',
             SourceArn=f'arn:aws:execute-api:us-east-1:{sts.account_id}:{api_id}/*/POST/signup'
+        )
+    except lambda_client.exceptions.ResourceConflictException:
+        print(f"[Lambda] Permission already exists for {lambda_name}")
+    except Exception as e:
+        print(f"[Lambda] Error granting API Gateway permission to invoke Lambda: {e}")
+        return
+    
+    try:
+        integration = apigateway.create_integration(
+            ApiId=api_id,
+            IntegrationType='AWS_PROXY',
+            IntegrationUri=f'arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/{lambda_arn}/invocations',
+            IntegrationMethod ='POST',
+            PayloadFormatVersion='2.0'
+        )
+        integration_id = integration['IntegrationId']
+        print(f"[API Gateway] Created {lambda_name} integration")
+    except Exception as e:
+        print(f"[API Gateway] Error creating integration: {e}")
+        return
+    
+    try:
+        route = apigateway.create_route(
+
+            ApiId=api_id,
+            RouteKey='POST /login',
+            Target=f'integrations/{integration_id}'
+        )
+        print(f"[API Gateway] Created route to {lambda_name}")
+        endpoint = f"https://{api_id}.execute-api.us-east-1.amazonaws.com/prod/login"
+        print(f"[API Gateway] Lambda connected to route. Endpoint: {endpoint}")
+    except Exception as e:
+        print(f"[API Gateway] Error creating route: {e}")
+        return
+    
+    try:
+        lambda_client.add_permission(
+            FunctionName=lambda_name,
+            StatementId=f'{lambda_name}-invoke-permission',
+            Action='lambda:InvokeFunction',
+            Principal='apigateway.amazonaws.com',
+            SourceArn=f'arn:aws:execute-api:us-east-1:{sts.account_id}:{api_id}/*/POST/login'
         )
     except lambda_client.exceptions.ResourceConflictException:
         print(f"[Lambda] Permission already exists for {lambda_name}")
@@ -134,6 +178,5 @@ def connect_lambda_to_api(lambda_name):
         print(f"[API Gateway] Error updating api: {e}")
         return
  
-    endpoint = f"https://{api_id}.execute-api.us-east-1.amazonaws.com/prod/signup"
-    print(f"[API Gateway] Lambda connected to route. Endpoint: {endpoint}")
+    
     return endpoint
