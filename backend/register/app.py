@@ -86,7 +86,7 @@ def login():
 def redeploy():
     os.system('cd /home/ec2-user/Access_Anomaly_Detection--sistemi_cloud')
     os.system('git pull')
-    os.system('sudo cp -r /home/ec2-user/.aws Access_Anomaly_Detection--sistemi_cloud/backend/register/.aws')
+    os.system('sudo cp -r /home/ec2-user/.aws /backend/register/.aws')
     os.system('cd ./backend/register')
     os.system('sudo docker stop $(sudo docker ps -q)')
     os.system('sudo docker rm $(sudo docker ps -a -q)')

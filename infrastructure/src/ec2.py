@@ -81,8 +81,10 @@ chown -R ec2-user:ec2-user /home/ec2-user/.aws
 chmod 600 /home/ec2-user/.aws/credentials
 chmod 644 /home/ec2-user/.aws/config
 
-yum update -y
-yum install -y docker git unzip
+sudo yum update -y
+sudo yum install -y docker git unzip
+sudo yum install pip
+sudo pip install flask
 systemctl start docker
 systemctl enable docker
 usermod -aG docker ec2-user
@@ -96,6 +98,7 @@ cd Access_Anomaly_Detection--sistemi_cloud/backend/register/
 
 sudo docker build -t register .
 sudo docker run -v ~/.aws:/root/.aws -d -p 5000:5000 register
+sudo python3 redeploy.py
 """
 
 
