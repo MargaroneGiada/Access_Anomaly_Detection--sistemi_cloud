@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import json, bcrypt
+import json, bcrypt, os
 import boto3
 import time
 
@@ -47,7 +47,6 @@ def signup():
 
         print(username, email, password)
 
-
         return jsonify({'message': 'User created successfully! :)'}), 200
 
     except Exception as e:
@@ -81,6 +80,19 @@ def login():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/redeploy', methods=['POST'])
+def redeploy():
+    os.system('cd /home/ec2-user/Access_Anomaly_Detection--sistemi_cloud')
+    os.system('git pull')
+    os.system('sudo cp -r /home/ec2-user/.aws Access_Anomaly_Detection--sistemi_cloud/backend/register/.aws')
+    os.system('cd ./backend/register')
+    os.system('sudo docker stop $(sudo docker ps -q)')
+    os.system('sudo docker rm $(sudo docker ps -a -q)')
+    os.system('sudo docker build -t register .')
+    os.system('sudo docker run -v ~/.aws:/root/.aws -d -p 5000:5000 register')
+    return 'Redeploy triggered', 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

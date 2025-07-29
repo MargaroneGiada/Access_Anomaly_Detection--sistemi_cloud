@@ -1,5 +1,6 @@
 update_credentials.sh
 **/.venv
+token.env
 
 # Logs
 logs

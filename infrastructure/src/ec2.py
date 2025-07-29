@@ -1,5 +1,6 @@
 import boto3, os, time, base64
 import json
+from src import github_secrets as git
 
 ec2 = boto3.resource('ec2', region_name='us-east-1')
 client = boto3.client('ec2', region_name='us-east-1')
@@ -57,29 +58,46 @@ def create_instance_signup():
     with open("backend.zip", "rb") as f:
         encoded_zip = base64.b64encode(f.read()).decode("utf-8")
 
-
     sec_group_id = create_or_get_security_group()
 
     user_data_script = f"""#!/bin/bash
-        exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
-        sudo yum update -y
-        sudo yum install -y docker unzip
-        sudo yum install git -y
-        systemctl start docker
-        systemctl enable docker
-        # usermod -aG docker ec2-user
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
-        cd /home/ec2-user
-        # echo "{encoded_zip}" | base64 -d > backend.zip
-        # unzip backend.zip
-        # cd backend/register
-        git clone https://github.com/MargaroneGiada/Access_Anomaly_Detection--sistemi_cloud.git
-        cd A
-        docker build -t register .
-        docker run -d -p 5000:5000 register
-        docker build -t redeploy/Dockerfile .
-        docker run -d -p 9000:9000 redeploy
-        """
+mkdir -p /home/ec2-user/.aws
+
+cat > /home/ec2-user/.aws/credentials <<EOL
+[default]
+aws_access_key_id={git.SECRET_AWS_ACCESS_KEY_ID}
+aws_secret_access_key={git.SECRET_AWS_SECRET_ACCESS_KEY}
+aws_session_token={git.SECRET_AWS_SESSION_TOKEN}
+EOL
+
+cat > /home/ec2-user/.aws/config <<EOL
+[default]
+region = us-east-1
+EOL
+
+chown -R ec2-user:ec2-user /home/ec2-user/.aws
+chmod 600 /home/ec2-user/.aws/credentials
+chmod 644 /home/ec2-user/.aws/config
+
+yum update -y
+yum install -y docker git unzip
+systemctl start docker
+systemctl enable docker
+usermod -aG docker ec2-user
+
+cd /home/ec2-user
+git clone https://github.com/MargaroneGiada/Access_Anomaly_Detection--sistemi_cloud.git
+
+sudo cp -r .aws Access_Anomaly_Detection--sistemi_cloud/backend/register/.aws
+
+cd Access_Anomaly_Detection--sistemi_cloud/backend/register/
+
+sudo docker build -t register .
+sudo docker run -v ~/.aws:/root/.aws -d -p 5000:5000 register
+"""
+
 
     instances = ec2.create_instances(
         ImageId='ami-08a6efd148b1f7504',

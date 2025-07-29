@@ -20,7 +20,8 @@ def get_aws_credential_value(key="aws_access_key_id"):
 
 OWNER = "MargaroneGiada"
 REPO = "Access_Anomaly_Detection--sistemi_cloud"
-TOKEN = "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"
+with open('token.env', 'r') as f:
+    TOKEN = f.read()
 AWS_ACCESS_KEY_ID = "AWS_ACCESS_KEY_ID"
 AWS_SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY"
 AWS_SESSION_TOKEN = "AWS_SESSION_TOKEN"
