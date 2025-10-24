@@ -9,7 +9,7 @@ from src import cognito as cognito
 
 
 s3.delete_frontend_bucket()
-s3.delete_backend_bucket()
+# s3.delete_backend_bucket()
 cloudfront.delete_distribution()
 cloudfront.delete_oac()
 api.delete_api()

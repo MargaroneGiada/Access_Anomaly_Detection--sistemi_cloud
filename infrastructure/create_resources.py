@@ -2,6 +2,7 @@ import importlib
 from src import s3
 from src import apigateway as api
 from src import dynamodb as db
+from src import cognito as cog
 # from src import ec2
 # from src import ecr
 # from src import lambda_signup as signup
@@ -25,6 +26,10 @@ api.connect_lambda_to_api('SignupFunction')
 
 # DynamoDB
 db.create_users_table()
+
+# Cognito
+user_pool_id = cog.create_user_pool()
+cog.create_user_pool_client(user_pool_id=user_pool_id)
 
 # #Lambda
 # signup.signup_build_and_push_image()
