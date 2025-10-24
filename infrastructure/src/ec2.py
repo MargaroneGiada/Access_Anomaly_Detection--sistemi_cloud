@@ -14,7 +14,7 @@ def create_or_get_security_group():
 
 def create_security_group():
     group_name = 'SecurityGroup'
-    description = 'Allow Flask on port 5000 and SSH'
+    description = 'Allow Flask on port 5000 and 9000 and SSH'
 
     try:
         vpc_id = 'vpc-068e93bec3c58ce7c'
@@ -34,6 +34,12 @@ def create_security_group():
                     'IpProtocol': 'tcp',
                     'FromPort': 5000,
                     'ToPort': 5000,
+                    'IpRanges': [{'CidrIp': '0.0.0.0/0'}] 
+                },
+                {
+                    'IpProtocol': 'tcp',
+                    'FromPort': 9000,
+                    'ToPort': 9000,
                     'IpRanges': [{'CidrIp': '0.0.0.0/0'}] 
                 },
                 {
@@ -83,7 +89,7 @@ chmod 644 /home/ec2-user/.aws/config
 
 sudo yum update -y
 sudo yum install -y docker git unzip
-sudo yum install pip
+sudo yum install pip -y
 sudo pip install flask
 systemctl start docker
 systemctl enable docker

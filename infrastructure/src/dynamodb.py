@@ -28,3 +28,14 @@ def delete_users_table():
     except Exception as e:
         print(f'[DynamoDB] Error while deleting user table: {e}')
 
+def create_access_log_table():
+    try:
+        dynamodb.create_table(
+            TableName='AccessLogs',
+            AttributeDefinitions=[{'AttributeName': 'email', 'AttributeType': 'S'}, {'AttributeName': 'timestamp', 'AttributeType': 'N'}],
+            KeySchema=[{'AttributeName': 'email', 'KeyType': 'HASH'}, {'AttributeName': 'timestamp', 'AttributeType': 'RANGE'}],
+            BillingMode='PAY_PER_REQUEST'
+        )
+        print("[DynamoDB] Table 'Users' created.")
+    except Exception as e:
+        print(f'[DynamoDB] Error while creating user table: {e}')

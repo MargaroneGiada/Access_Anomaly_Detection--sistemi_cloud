@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
+import { signIn } from "./cognito";
 
 function Login() {
     const [isRightPanelActive, setIsRightPanelActive] = useState(false);
@@ -8,42 +9,33 @@ function Login() {
 
     const [signupEmail, setSignupEmail] = useState('');
     const [signupPassword, setSignupPassword] = useState('');
+    const [signupUsername, setSignupUsername] = useState('');
+
+    const [signinEmail, setSigninEmail] = useState('');
+    const [signinPassword, setSigninPassword] = useState('');
 
 
     const handleSignUp = async (e) => {
         e.preventDefault();
-
         try {
-            const response = await fetch('https://dztmp5gmbe.execute-api.us-east-1.amazonaws.com/prod/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: signupEmail,
-                    password: signupPassword,
-                }),
-            });
-
-            if (response.ok) {
-                const data = await response.json(); // opzionale, dipende dalla tua lambda
-                console.log("[Frontend] Signup success:", data);
-                navigate('/');
-            } else {
-                const errorText = await response.text();
-                console.error("[Frontend] Signup failed:", errorText);
-                alert("Errore durante la registrazione");
-            }
-        } catch (error) {
-            console.error("[Frontend] Network error:", error);
-            alert("Errore di rete");
+            const tokens = await signUp(signupUsername, signupPassword, signupEmail);
+            console.log("Signup riuscito:", tokens);
+            localStorage.setItem("idToken", tokens.idToken);
+        } catch (err) {
+            console.error("Errore sugnup:", err);
         }
     };
 
 
-    const handleSignIn = (e) => {
-        e.preventDefault(); 
-        navigate('/');
+    const handleSignIn = async (e) => {
+        e.preventDefault();
+        try {
+            const tokens = await signIn(signinEmail, signinPassword);
+            console.log("Login riuscito:", tokens);
+            localStorage.setItem("idToken", tokens.idToken);
+        } catch (err) {
+            console.error("Errore login:", err);
+        }
     };
 
 
@@ -53,24 +45,30 @@ function Login() {
 
                 <div className="form-container sign-up-container">
                     <form onSubmit={handleSignUp}>
-                    <h1>Create Account</h1>
-                    <input type="text" placeholder="Name" />
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={signupEmail}s
-                        onChange={(e) => setSignupEmail(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={signupPassword}
-                        onChange={(e) => setSignupPassword(e.target.value)}
-                        required
-                    />
-                    <button>Sign Up</button>
-                </form>
+                        <h1>Create Account</h1>
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            value={signupUsername}
+                            onChange={(e) => setSignupUsername(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={signupEmail} s
+                            onChange={(e) => setSignupEmail(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={signupPassword}
+                            onChange={(e) => setSignupPassword(e.target.value)}
+                            required
+                        />
+                        <button>Sign Up</button>
+                    </form>
 
                 </div>
 
@@ -78,8 +76,20 @@ function Login() {
                     <form onSubmit={handleSignIn}>
                         <h1>Sign in</h1>
 
-                        <input type="email" placeholder="Email" />
-                        <input type="password" placeholder="Password" />
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={signinEmail} s
+                            onChange={(e) => setSigninEmail(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={signinPassword}
+                            onChange={(e) => setSigninPassword(e.target.value)}
+                            required
+                        />
                         <a href="#">Forgot your password?</a>
                         <button>Sign In</button>
                     </form>

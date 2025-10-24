@@ -1,59 +1,98 @@
 import boto3
+from src import config
 
-cognito = boto3.client('cognito-idp', 'us-east-1')
-
-def delete_user_pool():
-    
-    response = cognito.list_user_pools(MaxResults=5)
-    user_pools = response.get("UserPools", [])
-
-    for pool in user_pools:
-        pool_id = pool["Id"]
-        print(f"Deleting App Clients in user pool: {pool_id}")
-        
-        clients_response = cognito.list_user_pool_clients(
-            UserPoolId=pool_id,
-            MaxResults=5
-        )
-        for client_desc in clients_response.get("UserPoolClients", []):
-            client_id = client_desc["ClientId"]
-            print(f"  Deleting App Client: {client_id}")
-            cognito.delete_user_pool_client(
-                UserPoolId=pool_id,
-                ClientId=client_id
-            )
-        
-        print(f"Deleting user pool: {pool_id}")
-        cognito.delete_user_pool(UserPoolId=pool_id)
-
+cognito = boto3.client('cognito-idp', region_name='us-east-1')
 
 def create_user_pool():
-    user_pool = cognito.create_user_pool(
-        PoolName="aad-user-pool",
-        AutoVerifiedAttributes=["email"],  
-        UsernameAttributes=["email"],      
-        MfaConfiguration="OFF"             
+    response = cognito.create_user_pool(
+        PoolName='AccessAnomalyDetector',
+        AutoVerifiedAttributes=['email'],
+        UsernameAttributes=['email'],
+        AccountRecoverySetting={
+            'RecoveryMechanisms': [
+                {'Name': 'verified_email', 'Priority': 1}
+            ]
+        },
+        Policies={
+            'PasswordPolicy': {
+                'MinimumLength': 8,
+                'RequireUppercase': True,
+                'RequireLowercase': True,
+                'RequireNumbers': True,
+                'RequireSymbols': True,
+                'TemporaryPasswordValidityDays': 7
+            }
+        }
     )
-    user_pool_id = user_pool["UserPool"]["Id"]
+    pool_id = response['UserPool']['Id']
+    config.USER_POOL_ID = pool_id
+    print(f"[Cognito] Created User Pool: {pool_id}")
+    return pool_id
 
-    app_client = cognito.create_user_pool_client(
+def create_user_pool_client(user_pool_id):
+    response = cognito.create_user_pool_client(
         UserPoolId=user_pool_id,
-        ClientName="aad-user-pool-client",
-        GenerateSecret=False,  
-        AllowedOAuthFlows=['code'],  
-        AllowedOAuthScopes=[
-            'openid',  
-            'email',
-            'profile'
-        ],
-        AllowedOAuthFlowsUserPoolClient=True,
-        CallbackURLs=["http://localhost"],  
-        LogoutURLs=["http://localhost"],
-        SupportedIdentityProviders=['COGNITO'],
+        ClientName='AccessAnomalyDetectorAppClient',
+        GenerateSecret=False,       
+        ExplicitAuthFlows=[
+            'ADMIN_NO_SRP_AUTH',     
+            'ALLOW_USER_PASSWORD_AUTH',
+            'ALLOW_REFRESH_TOKEN_AUTH'
+        ]
     )
+    client_id = response['UserPoolClient']['ClientId']
+    config.CLIENT_ID = client_id
+    print(f"[Cognito] Created App Client: {client_id}")
+    return client_id
 
-    print(f"Created user pool 'aad-user-pool', id: {user_pool_id}")
-    return user_pool_id, app_client
+def delete_user_pool():
+    response = cognito.list_user_pools();
+    for userpool in response["UserPools"]:
+        cognito.delete_user_pool(UserPoolId=userpool["Id"])
+        print(f"[Cognito] Deleted User Pool: {userpool['Id']}")
 
-# delete_user_pool()
-create_user_pool()
+def delete_user_pool_client():
+    response = cognito.list_user_pool_clients();
+    for userpoolclient in response["UserPoolClients"]:
+        cognito.delete_user_pool_client(
+            UserPoolId=userpoolclient["UserPoolId"],
+            ClientId=userpoolclient["ClientId"]
+        )
+        print(f"[Cognito] Deleted App Client: {userpoolclient['ClientId']}")
+
+def signup(username, password, email, user_pool_id, client_id):
+    cognito.sign_up(
+        ClientId=client_id,
+        Username=username,
+        Password=password,
+        UserAttributes=[{'Name': 'email', 'Value': email}]
+    )
+    # conferma immediata (opzionale)
+    cognito.admin_confirm_sign_up(
+        UserPoolId=user_pool_id,
+        Username=username
+    )
+    print(f"[Cognito] User {username} registered")
+
+def login(email, password, user_pool_id, client_id):
+    try:
+        response = cognito.admin_initiate_auth(
+            UserPoolId=user_pool_id,
+            ClientId=client_id,
+            AuthFlow='ADMIN_NO_SRP_AUTH',
+            AuthParameters={
+                'USERNAME': email,
+                'PASSWORD': password
+            }
+        )
+        print(f"[Cognito] User with the email {email} is logged in")
+    except Exception as e:
+        print(f"[Cognito] User {email} could not log in: {e}")
+    
+    return {
+        "idToken": response['AuthenticationResult']['IdToken'],
+        "accessToken": response['AuthenticationResult']['AccessToken'],
+        "refreshToken": response['AuthenticationResult']['RefreshToken']
+    }
+
+

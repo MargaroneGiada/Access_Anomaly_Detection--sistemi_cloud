@@ -1,6 +1,12 @@
 import boto3, mimetypes
 import os
 import json
+from . import cloudfront
+
+def create_distribution():
+    oac_id = cloudfront.create_oac()
+    distribution_domain_name, distribution_id, distribution_arn = cloudfront.create_distribution(oac_id)
+    return distribution_domain_name, distribution_id, distribution_arn
 
 try:
     s3 = boto3.client('s3')
@@ -33,6 +39,26 @@ def delete_frontend_bucket():
 
 def create_frontend_bucket():
     try:
+        _, _, distribution_arn = create_distribution()
+        bucket_policy = {
+            "Version": "2008-10-17",
+            "Id": "PolicyForCloudFrontPrivateContent",
+            "Statement": [
+                {
+                    "Sid": "AllowCloudFrontServicePrincipal",
+                    "Effect": "Allow",
+                    "Principal": {"Service": "cloudfront.amazonaws.com"},
+                    "Action": "s3:GetObject",
+                    "Resource": f"arn:aws:s3:::{bucket_name}/*",
+                    "Condition": {
+                        "StringEquals": {
+                            "AWS:SourceArn": distribution_arn
+                        }
+                    }
+                }
+            ]
+        }
+        
         s3.create_bucket(
             Bucket=bucket_name
         )
@@ -44,33 +70,6 @@ def create_frontend_bucket():
                 'ErrorDocument': {'Key': 'index.html'}
             }
         )
-
-        s3.delete_public_access_block(
-            Bucket=bucket_name
-        )
-
-        s3.put_public_access_block(
-            Bucket=bucket_name,
-            PublicAccessBlockConfiguration={
-                'BlockPublicAcls': False,
-                'IgnorePublicAcls': False,
-                'BlockPublicPolicy': False,
-                'RestrictPublicBuckets': False
-            }
-        )
-
-        bucket_policy = {
-            "Version": "2012-10-17",
-            "Statement": [
-                {
-                    "Sid": "PublicReadGetObject",
-                    "Effect": "Allow",
-                    "Principal": "*",
-                    "Action": "s3:GetObject",
-                    "Resource": f"arn:aws:s3:::{bucket_name}/*"
-                }
-            ]
-        }
 
         s3.put_bucket_policy(
             Bucket=bucket_name,
